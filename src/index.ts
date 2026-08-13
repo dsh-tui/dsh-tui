@@ -755,6 +755,16 @@ export function createTuiChat(
     },
   ): void => {
     const isSteering = steeringHistory.apply(event)
+    // The react loop admits prompt-boundary messages at the step boundary, so
+    // their user/message events land after step/start created this step's
+    // assistant component; keep admission-time rows above the reply they
+    // produce. Steering keeps plain append order: it arrives mid-turn, after
+    // the in-flight output it steers.
+    const insertAboveCurrentStep = (...components: Component[]): void => {
+      const anchor = streaming === undefined ? -1 : chat.children.indexOf(streaming)
+      if (anchor >= 0) chat.children.splice(anchor, 0, ...components)
+      else for (const component of components) chat.addChild(component)
+    }
     switch (event.type) {
       case 'user/message': {
         if (isSteering) {
@@ -772,8 +782,10 @@ export function createTuiChat(
         if (source.kind !== 'user') {
           const references = sessionReferenceCard(event.data.source)
           if (references !== undefined) {
-            chat.addChild(new Spacer(1))
-            chat.addChild(new Text(palette.dim(`Referenced sessions · ${references.map(displayText).join(', ')}`), 0, 0))
+            insertAboveCurrentStep(
+              new Spacer(1),
+              new Text(palette.dim(`Referenced sessions · ${references.map(displayText).join(', ')}`), 0, 0),
+            )
             break
           }
           const text = contentText(event.data.content).trim()
@@ -790,15 +802,13 @@ export function createTuiChat(
             const card = new ContextCardComponent(label, text, resolved.maxToolOutputLines, palette)
             card.setExpanded(toolsVisibility === 'expanded')
             contextCards.add(card)
-            chat.addChild(new Spacer(1))
-            chat.addChild(card)
+            insertAboveCurrentStep(new Spacer(1), card)
           }
           break
         }
         const text = displayText(contentText(event.data.content).trim())
         if (text) {
-          chat.addChild(new Spacer(1))
-          chat.addChild(new UserMessageComponent(text, palette, mdTheme))
+          insertAboveCurrentStep(new Spacer(1), new UserMessageComponent(text, palette, mdTheme))
           if (options.addHistory) editor.addToHistory(text)
         }
         break

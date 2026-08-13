@@ -6,6 +6,8 @@
 
 它组合在官方 `@deepseek-ai/dsh-base` bundle 之上，与官方 web 界面共享同一套插件生态——shell 与文件系统工具、技能、子代理、工作流、沙箱审批——不 fork、不魔改。
 
+![dsh-tui 会话](docs/tui.png)
+
 ## 功能
 
 - 模型输出与思考过程的流式 Markdown 渲染

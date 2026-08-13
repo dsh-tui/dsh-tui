@@ -6,6 +6,8 @@ An interactive terminal (TUI) front door for [DeepSeek Harness](https://github.c
 
 It composes over the official `@deepseek-ai/dsh-base` bundle, so the whole plugin ecosystem — shell and filesystem tools, skills, subagents, workflows, sandbox approvals — is the same one the official web surface uses. Nothing is forked.
 
+![A dsh-tui session](docs/tui.png)
+
 ## Features
 
 - Streaming model output and reasoning, rendered as Markdown
