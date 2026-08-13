@@ -18,6 +18,10 @@ export default defineConfig({
   // pi-tui carries a pnpm patch (patches/) that only applies inside THIS
   // repo's install, so the patched copy is baked into lib/ instead of being
   // declared a runtime dependency; its own deps stay external and are
-  // declared as this package's dependencies.
-  noExternal: ['@earendil-works/pi-tui'],
+  // declared as this package's dependencies. onlyBundle doubles as a guard:
+  // the build fails if anything else sneaks into the bundle.
+  deps: {
+    alwaysBundle: ['@earendil-works/pi-tui'],
+    onlyBundle: ['@earendil-works/pi-tui'],
+  },
 })
