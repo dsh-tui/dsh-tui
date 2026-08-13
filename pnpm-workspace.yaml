@@ -1,2 +1,8 @@
 patchedDependencies:
   '@earendil-works/pi-tui@0.80.7': patches/@earendil-works__pi-tui@0.80.7.patch
+
+# The git-install prepare runs `pnpm install` inside the clone; esbuild's
+# postinstall (tsdown's binary resolver) must be pre-approved or that isolated
+# install fails with ERR_PNPM_IGNORED_BUILDS.
+allowBuilds:
+  esbuild: true
