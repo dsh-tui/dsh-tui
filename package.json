@@ -1,7 +1,7 @@
 {
   "name": "@openguardrails/dsh-tui",
   "description": "Interactive pi-tui terminal front door for DeepSeek Harness agents",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "main": "lib/index.js",
   "types": "lib/types/index.d.ts",
