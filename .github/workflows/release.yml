@@ -36,7 +36,11 @@ jobs:
       - run: pnpm build
       - name: Create package tarball
         shell: bash
+        # scripts.prepare exists so git-hosted installs build from source; the
+        # tarball ships prebuilt lib/, and leaving prepare in would make pnpm
+        # flag every registry install for build-script approval.
         run: |
+          npm pkg delete scripts.prepare
           mkdir package
           npm pack --pack-destination "$GITHUB_WORKSPACE/package"
       - uses: actions/upload-artifact@v4
