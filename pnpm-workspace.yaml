@@ -6,3 +6,7 @@ patchedDependencies:
 # install fails with ERR_PNPM_IGNORED_BUILDS.
 allowBuilds:
   esbuild: true
+
+# The whole @deepseek-ai peer family tracks a freshly-cut rc line, so pnpm's
+# default publish-age quarantine would reject every upstream release for a day.
+minimumReleaseAge: 0
