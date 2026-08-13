@@ -1,0 +1,92 @@
+# @openguardrails/dsh-tui — the interactive TUI, as a bundle patch layer over
+# @deepseek-ai/dsh-base. A patch replaces the targeted row's whole `config`, so
+# each overridden row below restates every key it owns. Later layers (the
+# profile's cordis.patch.yml, $DSH_HOME/cordis.patch.yml, --patch overlays)
+# re-patch any of these rows, which is where a deployment repoints the model
+# route or the DeepSeek endpoint.
+
+# ── base rows this surface overrides ────────────────────────────────────────
+
+# `main` is the agent the TUI drives. Its exact session identity (fresh UUID or
+# --resume) is provided by the tui-startup row through the
+# configuredAgentIdentities slot; `inject` makes this row wait for it.
+- id: agent-loop
+  inject: [tuiStartup]
+  config:
+    agents:
+      - id: main
+        provider: deepseek-official
+        model: deepseek-v4-pro
+        cwd: !!js process.cwd()
+
+# Keep the persona to identity and behavior; tool plugins own tool guidance.
+# The loop resolves {{model}} from this agent's configuration.
+- id: system-prompt
+  config:
+    persona: |
+      You are a coding agent powered by the {{model}} model.
+
+      Verify your work by running the code or tests. Keep answers brief and
+      factual.
+
+# Full thinking at max effort on every request. Key and endpoint stay
+# unconfigured here: both resolve per request from the `llm-deepseek:`
+# settings section, the credential store, and $DEEPSEEK_BASE_URL.
+- id: llm-deepseek
+  config:
+    thinking: enabled
+    reasoningEffort: max
+
+# ── TUI-only rows ───────────────────────────────────────────────────────────
+
+- insert:
+    # Command-line intake and session identity for the rows above.
+    - id: tui-startup
+      name: '@openguardrails/dsh-tui/startup'
+
+    # `@session` references in the composer.
+    - id: session-reference
+      name: '@deepseek-ai/dsh-session-reference'
+
+    # Durable projection checkpoints (same storage root the web surface uses):
+    # `/resume` reads titles from the zero-I/O checkpoint row or a tail-only
+    # cold read instead of scanning whole logs.
+    - id: storage
+      name: '@deepseek-ai/dsh-storage'
+    - id: storage-json
+      name: '@deepseek-ai/dsh-storage-json'
+      config:
+        root: !!js dshHomePath('storages')
+    - id: storage-domain
+      name: '@deepseek-ai/dsh-storage-domain'
+      config:
+        backend: json
+    - id: session-projection-cache
+      name: '@deepseek-ai/dsh-session-projection-cache'
+      config:
+        writeEveryEvents: 200
+        writeIntervalMs: 5000
+
+    # Terminal-multiplexer context, mounted only where a terminal exists.
+    - id: tmux-context
+      name: '@deepseek-ai/dsh-tmux-context'
+      config:
+        refreshIntervalMs: 900000
+
+    # The keyboard-backed provider behind ask_user_question and the plan-mode
+    # review, and the front door it renders inside.
+    - id: tui-prompt
+      name: '@openguardrails/dsh-tui/prompt'
+
+    # The TUI renders exactly the agent the agent-loop row bound, so it reads
+    # the same startup-owned identity rather than restating one.
+    - id: tui
+      name: '@openguardrails/dsh-tui'
+      inject: [tuiStartup]
+      config:
+        sessionId: !!js ctx.tuiStartup.sessionId
+        showReasoning: true
+        maxToolOutputLines: 6
+
+    - id: tool-ask-user
+      name: '@deepseek-ai/dsh-tool-ask-user'
