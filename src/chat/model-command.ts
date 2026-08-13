@@ -3,11 +3,11 @@
  * `/model` command, the keyboard model selector overlay with reasoning-effort
  * selection, and resolution of the selected model's context window. Owns the
  * context-window cache the prompt and status views read; the caller owns the
- * shared {@link AgentLlmTargetRef}.
+ * shared {@link ModelSelectionRef}.
  * @module @deepseek-ai/dsh-tui/chat/model-command
  */
 
-import type { AgentLlmTarget, AgentLlmTargetRef } from '@deepseek-ai/dsh-agent'
+import type { ModelSelection, ModelSelectionRef } from '@deepseek-ai/dsh-agent'
 import { errorChain, LlmError, type ReasoningEffortId } from '@deepseek-ai/dsh-llm'
 import type { TuiOverlaySession } from '../extension/types.ts'
 import { displayText } from '../components/text.ts'
@@ -24,7 +24,7 @@ import type { ChannelNotice, ChatChannelDeps } from './channel.ts'
 /** Collaborators the model controller needs from the chat channel. */
 export interface ModelControllerDeps extends ChatChannelDeps, ChannelNotice {
   /** Shared selected-target handle owned by the channel. */
-  readonly target: AgentLlmTargetRef
+  readonly target: ModelSelectionRef
 }
 
 /** Model-selection controller for one chat channel. */
@@ -63,7 +63,7 @@ export function createModelController(deps: ModelControllerDeps): ModelControlle
   // waits for the next `llm/adapters-updated` commit instead of surfacing it.
   let awaitingAdapter = false
 
-  const resolveContextWindow = (selected: AgentLlmTarget | undefined): void => {
+  const resolveContextWindow = (selected: ModelSelection | undefined): void => {
     contextWindow = undefined
     awaitingAdapter = false
     const resolution: Promise<ContextResolution> = selected === undefined

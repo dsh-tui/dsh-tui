@@ -17,15 +17,15 @@ import {
   type Focusable,
   type SelectItem,
 } from '@earendil-works/pi-tui'
-import type { Context } from 'cordis'
+import type { Context } from '@deepseek-ai/cordis'
 import {
   type Agent,
-  type AgentLlmTarget,
+  type ModelSelection,
 } from '@deepseek-ai/dsh-agent'
 import type { LlmModelInfo, LlmModelReasoningInfo, ReasoningEffortId } from '@deepseek-ai/dsh-llm'
 import type { SessionId } from '@deepseek-ai/dsh-session'
 import type { SessionRecord } from '@deepseek-ai/dsh-session-query'
-import type { AskUserQuestionItem } from '@deepseek-ai/dsh-user-interaction'
+import type { AskUserQuestionItem } from '@deepseek-ai/dsh-user-questions'
 import { BRACKETED_PASTE_END, BRACKETED_PASTE_START, displayText, sanitizePastedText } from './text.ts'
 import { dialogSelectTheme, type Palette } from './theme.ts'
 import type { ToolCardVisibility } from './transcript.ts'
@@ -35,7 +35,7 @@ import {
 } from '../prompt.ts'
 
 /** A selectable model advertised by a provider, with its display name, description, and reasoning metadata. */
-export interface ModelChoice extends AgentLlmTarget {
+export interface ModelChoice extends ModelSelection {
   modelName: string
   description?: string
   reasoning?: LlmModelReasoningInfo
@@ -54,7 +54,7 @@ export interface ModelDialogSelection {
  * @param target - The LLM target.
  * @returns The `provider/model` label.
  */
-export function targetLabel(target: AgentLlmTarget): string {
+export function targetLabel(target: ModelSelection): string {
   return `${target.provider}/${target.model}`
 }
 
@@ -63,7 +63,7 @@ export function targetLabel(target: AgentLlmTarget): string {
  * @param target - The LLM target.
  * @returns The compact `model [effort]` label.
  */
-export function compactTargetLabel(target: AgentLlmTarget): string {
+export function compactTargetLabel(target: ModelSelection): string {
   return `${target.model}${target.reasoningEffort === undefined ? '' : ` ${target.reasoningEffort}`}`
 }
 
@@ -83,7 +83,7 @@ export function targetReasoningLabel(choice: ModelChoice, effort: ReasoningEffor
  * @param agent - The driven agent.
  * @returns The initial target, or `undefined` when unset.
  */
-export function initialTarget(agent: Agent): AgentLlmTarget | undefined {
+export function initialTarget(agent: Agent): ModelSelection | undefined {
   const logged = agent.session.requestHeader()?.config
   if (logged !== undefined) {
     if (logged.reasoningEffort === undefined) {
@@ -104,7 +104,7 @@ export function initialTarget(agent: Agent): AgentLlmTarget | undefined {
  */
 export async function readModelChoices(
   ctx: Context,
-  current: AgentLlmTarget | undefined,
+  current: ModelSelection | undefined,
 ): Promise<ModelChoice[]> {
   const providers = ctx.llm.listProviders()
   const groups = await Promise.all(providers.map(async (provider) => {
@@ -288,7 +288,7 @@ export class ModelDialog implements Component {
 
   constructor(
     choices: readonly ModelChoice[],
-    current: AgentLlmTarget | undefined,
+    current: ModelSelection | undefined,
     private readonly maxVisible: number,
     private readonly palette: Palette,
     private readonly done: (selection: ModelDialogSelection) => void,

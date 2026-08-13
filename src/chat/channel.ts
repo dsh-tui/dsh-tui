@@ -8,7 +8,7 @@
  * @module @deepseek-ai/dsh-tui/chat/channel
  */
 
-import type { Context } from 'cordis'
+import type { Context } from '@deepseek-ai/cordis'
 import type { TuiOverlayManager } from '../extension/overlay-manager.ts'
 import type { Palette } from '../components/theme.ts'
 import type { ResolvedTuiConfig } from '../config.ts'

@@ -3,13 +3,13 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { afterAll, describe, expect, it, vi } from 'vitest'
-import type { Context } from 'cordis'
+import type { Context } from '@deepseek-ai/cordis'
 import { agentEvents } from '@deepseek-ai/dsh-agent'
-import { COMPACT_CHECKPOINT_SOURCE } from '@deepseek-ai/dsh-compact'
+import { COMPACT_CHECKPOINT_SOURCE } from '@deepseek-ai/dsh-compaction'
 import { createUserMessage, CallId, type ContentBlock , createMessage, createToolResultMessage } from '@deepseek-ai/dsh-llm'
 import type {} from '@deepseek-ai/dsh-llm-retry'
 import { SessionId, type JsonValue, type Session, type SessionEvent } from '@deepseek-ai/dsh-session'
-import SessionReferenceService from '@deepseek-ai/dsh-session-reference'
+import SessionReferenceResolver from '@deepseek-ai/dsh-session-reference'
 import SystemPrompt from '@deepseek-ai/dsh-system-prompt'
 import ToolRegistry, { type ToolDefinition, type ToolResultView } from '@deepseek-ai/dsh-tools'
 import * as ToolCordis from '@deepseek-ai/dsh-tool-cordis'
@@ -23,7 +23,7 @@ import {
   type TuiHarnessOptions,
 } from './harness.ts'
 import { HeadlessTerminal, type TerminalSnapshotOptions } from './headless-terminal.ts'
-import { TestSessionQueryService } from './session-query.ts'
+import { TestSessionQueryEngine } from './session-query.ts'
 
 const SNAPSHOTS_DIR = join(dirname(fileURLToPath(import.meta.url)), 'snapshots')
 const REFRESHING = process.env.DSH_SNAPSHOT === 'refresh'
@@ -533,8 +533,8 @@ describe('TUI terminal-state snapshots', () => {
     const harness = await setupSnapshot({
       async configureContext(ctx) {
         ctx.provide('tools', { get: () => undefined } as never)
-        await ctx.plugin(TestSessionQueryService)
-        await ctx.plugin(SessionReferenceService)
+        await ctx.plugin(TestSessionQueryEngine)
+        await ctx.plugin(SessionReferenceResolver)
         const source = ctx.sessions.create(SessionId('opaque-source-id'), {
           meta: { cwd: '/workspace/project', createdAt: 1 },
         })
@@ -753,7 +753,7 @@ describe('TUI terminal-state snapshots', () => {
 
     const controller = new AbortController()
     const beforeQuestion = harness.terminal.frames
-    const answer = harness.ctx.userInteraction.ask({
+    const answer = harness.ctx.userQuestions.ask({
       questions: [{
         id: 'unsafe-question',
         header: `Unsafe header ${CONTROL_PROBE}`,
@@ -783,7 +783,7 @@ describe('TUI terminal-state snapshots', () => {
     }, { columns: 56, rows: 20 })
     const controller = new AbortController()
     const beforeQuestion = harness.terminal.frames
-    const answer = harness.ctx.userInteraction.ask({
+    const answer = harness.ctx.userQuestions.ask({
       questions: [
         {
           id: 'coverage',
@@ -834,7 +834,7 @@ describe('TUI terminal-state snapshots', () => {
     }, { columns: 56, rows: 20 })
     const controller = new AbortController()
     const beforeQuestion = harness.terminal.frames
-    const answer = harness.ctx.userInteraction.ask({
+    const answer = harness.ctx.userQuestions.ask({
       questions: [{
         id: 'confirm',
         header: 'Confirm',

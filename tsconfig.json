@@ -1,78 +1,27 @@
 {
-  "extends": "../../../tsconfig.base.json",
   "compilerOptions": {
+    "target": "es2024",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "sourceMap": false,
+    "declarationMap": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
+    "verbatimModuleSyntax": false,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "types": ["node"],
     "rootDir": "src",
     "outDir": "lib/types"
   },
-  "include": [
-    "src"
-  ],
-  "references": [
-    {
-      "path": "../../../vendor/cordis"
-    },
-    {
-      "path": "../../../vendor/schemastery"
-    },
-    {
-      "path": "../../core/agent"
-    },
-    {
-      "path": "../../core/agent-loop"
-    },
-    {
-      "path": "../../goal/goal"
-    },
-    {
-      "path": "../../core/session"
-    },
-    {
-      "path": "../../context/session-reference"
-    },
-    {
-      "path": "../../session-persistence/session-persistence"
-    },
-    {
-      "path": "../../session-projection/session-projection"
-    },
-    {
-      "path": "../../session-projection/session-projection-cache"
-    },
-    {
-      "path": "../../session-query/session-query"
-    },
-    {
-      "path": "../../session-title/session-title"
-    },
-    {
-      "path": "../../llm/llm"
-    },
-    {
-      "path": "../../llm/token-meter"
-    },
-    {
-      "path": "../../llm/llm-retry"
-    },
-    {
-      "path": "../../core/tools"
-    },
-    {
-      "path": "../commands"
-    },
-    {
-      "path": "../../compact/compact"
-    },
-    {
-      "path": "../../skill/skill"
-    },
-    {
-      "path": "../../subprocess/subprocess"
-    },
-    {
-      "path": "../user-interaction"
-    },
-    {
-      "path": "../../support/invariants"
-    }
-  ]
+  "include": ["src"]
 }

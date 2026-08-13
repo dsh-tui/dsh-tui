@@ -5,7 +5,7 @@
  * @module @deepseek-ai/dsh-tui/config
  */
 
-import z from 'schemastery'
+import z from '@deepseek-ai/schemastery'
 import {
   DEFAULT_FILE_SEARCH_EXCLUDED_DIRECTORIES,
   DEFAULT_FILE_SEARCH_MAX_ENTRIES,

@@ -6,7 +6,7 @@
  * @module @deepseek-ai/dsh-tui/extension/overlay-manager
  */
 
-import { Service, type Context } from 'cordis'
+import { Service, type Context } from '@deepseek-ai/cordis'
 import type { Agent } from '@deepseek-ai/dsh-agent'
 import type { TuiExtensionService } from '../index.ts'
 import type {

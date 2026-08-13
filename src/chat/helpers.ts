@@ -15,7 +15,7 @@ import {
   truncateToWidth,
   visibleWidth,
 } from '@earendil-works/pi-tui'
-import { isCompactCheckpointSource } from '@deepseek-ai/dsh-compact'
+import { isCompactCheckpointSource } from '@deepseek-ai/dsh-compaction'
 import { isAppendSurfaceEvent, isReplacementSurfaceEvent } from '@deepseek-ai/dsh-session'
 import type { Session, SessionEvent } from '@deepseek-ai/dsh-session'
 import { scrubbedParentEnv } from '@deepseek-ai/dsh-subprocess'
@@ -140,6 +140,16 @@ export function sessionReferenceCard(source: unknown): string[] | undefined {
     labels.push(label === sessionId ? sessionId : `${label} (${sessionId})`)
   }
   return labels
+}
+
+/**
+ * Timestamp of the newest event that reflects real session activity.
+ * Inlined from the harness's removed session-repair helper.
+ * @param events - session log to scan.
+ * @returns epoch ms of the last non-boundary event, or `undefined` on an empty log.
+ */
+export function lastActivityTime(events: readonly SessionEvent[]): number | undefined {
+  return events.findLast(event => event.type !== 'session/end-seed')?.time
 }
 
 /** Milliseconds between banner sweep-reveal frames (~60 fps). */

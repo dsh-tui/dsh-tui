@@ -15,7 +15,7 @@ import type {} from '@deepseek-ai/dsh-session-projection'
 import type { SessionProjectionCache } from '@deepseek-ai/dsh-session-projection-cache'
 import type {} from '@deepseek-ai/dsh-session-title'
 import type {
-  SessionQueryService,
+  SessionQueryEngine,
   SessionRecord,
 } from '@deepseek-ai/dsh-session-query'
 import type { HintEditor } from './helpers.ts'
@@ -39,7 +39,7 @@ export interface ResumeControllerDeps extends ChatChannelDeps, ChannelNotice {
    * guarantee between it and this front door, so a value captured once at
    * construction can be `undefined` even though the service arrives moments later.
    */
-  readonly sessionQuery: (this: void) => SessionQueryService | undefined
+  readonly sessionQuery: (this: void) => SessionQueryEngine | undefined
   readonly ui: TUI
   readonly editor: HintEditor
   /** Current agent status, re-read at each resume precondition point. */
@@ -145,7 +145,7 @@ export function createResumeController(deps: ResumeControllerDeps): ResumeContro
    * the cache falls back to one bounded raw-log title batch.
    */
   const resolveTitles = async (
-    listQuery: SessionQueryService,
+    listQuery: SessionQueryEngine,
     records: readonly SessionRecord[],
     signal: AbortSignal,
   ): Promise<TitleResolution[]> => {

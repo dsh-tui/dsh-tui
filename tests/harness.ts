@@ -1,5 +1,5 @@
 import { createUserMessage, MessageId , createMessage } from '@deepseek-ai/dsh-llm'
-import { Context } from 'cordis'
+import { Context } from '@deepseek-ai/cordis'
 import type { Terminal } from '@earendil-works/pi-tui'
 import AgentRegistry, {
   type Agent,
@@ -18,9 +18,9 @@ import CommandService from '@deepseek-ai/dsh-commands'
 import SessionStore, { SessionId, type Session, type SessionHeader, type UserMessage } from '@deepseek-ai/dsh-session'
 import SystemPrompt from '@deepseek-ai/dsh-system-prompt'
 import ToolRegistry, { type ToolDefinition } from '@deepseek-ai/dsh-tools'
-import UserInteractionService from '@deepseek-ai/dsh-user-interaction'
+import UserInteractionService from '@deepseek-ai/dsh-user-questions'
 import { createTuiChat, type Config, type TuiRuntime } from '../src/index.ts'
-import { TestSessionQueryService } from './session-query.ts'
+import { TestSessionQueryEngine } from './session-query.ts'
 import TuiPromptService from '../src/prompt.ts'
 
 interface FakeAgent extends Agent {
@@ -170,7 +170,7 @@ export async function createTuiTestHarness<TerminalType extends Terminal, Exit e
     } as never)
   }
   if (options.mountSessionQuery !== false && ctx.get('sessionQuery') === undefined) {
-    await ctx.plugin(TestSessionQueryService)
+    await ctx.plugin(TestSessionQueryEngine)
   }
   const sessionId = SessionId('main-session')
   const session = ctx.sessions.create(

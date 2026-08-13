@@ -13,7 +13,7 @@ import {
 import type { Agent } from '@deepseek-ai/dsh-agent'
 import {
   formatSessionReferenceMention,
-  type SessionReferenceService,
+  type SessionReferenceResolver,
 } from '@deepseek-ai/dsh-session-reference'
 import { displayInlineText } from '../components/text.ts'
 import { activeAtToken, formatFileMention, WorkspaceFileSearch } from './file-autocomplete.ts'
@@ -23,7 +23,7 @@ export class ReferenceAutocompleteProvider implements AutocompleteProvider {
   constructor(
     private readonly base: CombinedAutocompleteProvider,
     private readonly files: WorkspaceFileSearch,
-    private readonly sessions: SessionReferenceService | undefined,
+    private readonly sessions: SessionReferenceResolver | undefined,
     private readonly agent: Agent,
   ) {}
 

@@ -8,11 +8,11 @@
 
 import { errorChain } from '@deepseek-ai/dsh-llm'
 import {
-  UserInteractionError,
+  UserQuestionError,
   type AskUserQuestionAnswer,
   type AskUserQuestionAnswerItem,
   type AskUserQuestionRequest,
-} from '@deepseek-ai/dsh-user-interaction'
+} from '@deepseek-ai/dsh-user-questions'
 import type { TuiOverlaySession } from '../extension/types.ts'
 import { QuestionDialog } from '../components/dialogs.ts'
 import type { ChatChannelDeps } from './channel.ts'
@@ -60,7 +60,7 @@ export function createQuestionQueue(deps: QuestionQueueDeps): QuestionQueue {
     void pending.overlay?.close()
     pending.overlay = undefined
     removeAbortListener(pending)
-    pending.reject(new UserInteractionError(
+    pending.reject(new UserQuestionError(
       'ask_user_question was interrupted before the user answered',
       'ASK_ABORTED',
     ))
@@ -116,7 +116,7 @@ export function createQuestionQueue(deps: QuestionQueueDeps): QuestionQueue {
         if (result.reason !== 'error') return
         activeQuestion = undefined
         removeAbortListener(pending)
-        pending.reject(new UserInteractionError(
+        pending.reject(new UserQuestionError(
           `ask_user_question TUI failed: ${errorChain(result.error)}`,
           'ASK_ABORTED',
         ))
@@ -127,7 +127,7 @@ export function createQuestionQueue(deps: QuestionQueueDeps): QuestionQueue {
     show()
   }
 
-  const unregister = ctx.userInteraction.registerProvider({
+  const unregister = ctx.userQuestions.registerProvider({
     ask(request) {
       return new Promise<AskUserQuestionAnswer>((resolveAnswer, reject) => {
         const pending: PendingQuestion = {

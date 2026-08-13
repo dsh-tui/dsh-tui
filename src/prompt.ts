@@ -4,7 +4,7 @@
  * @module @deepseek-ai/dsh-tui/prompt
  */
 
-import { Context, Service } from 'cordis'
+import { Context, Service } from '@deepseek-ai/cordis'
 import { errorChain } from '@deepseek-ai/dsh-llm'
 
 export const name = 'tui-prompt'
@@ -28,7 +28,7 @@ interface RegisteredValue {
   value: string | undefined
 }
 
-declare module 'cordis' {
+declare module '@deepseek-ai/cordis' {
   interface Context {
     tuiPrompt: TuiPromptService
   }

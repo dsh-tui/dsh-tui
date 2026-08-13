@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import Loader from '@cordisjs/plugin-loader'
+import Loader from '@deepseek-ai/cordis-plugin-loader'
 import * as tui from '../src/index.ts'
 
 /** Real Loader export-path guard for the namespace TUI plugin. */
@@ -16,7 +16,7 @@ describe('dsh-tui plugin export shape', () => {
       'agents',
       'sessions',
       'commands',
-      'userInteraction',
+      'userQuestions',
       'tools',
       'llm',
       'systemPrompt',

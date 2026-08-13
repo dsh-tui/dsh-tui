@@ -1,4 +1,4 @@
-import { Context } from 'cordis'
+import { Context } from '@deepseek-ai/cordis'
 import { describe, expect, it, vi } from 'vitest'
 import type { Agent } from '@deepseek-ai/dsh-agent'
 import type {

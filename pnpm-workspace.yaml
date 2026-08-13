@@ -1,0 +1,2 @@
+patchedDependencies:
+  '@earendil-works/pi-tui@0.80.7': patches/@earendil-works__pi-tui@0.80.7.patch
