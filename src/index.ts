@@ -142,7 +142,7 @@ import {
 } from './chat/model-command.ts'
 import { createQuestionQueue } from './chat/questions.ts'
 import { createResumeController } from './chat/resume.ts'
-import type { TuiResumeHost, TuiRuntime } from './runtime.ts'
+import type { TuiRuntime } from './runtime.ts'
 import { WorkspaceFileSearch } from './chat/file-autocomplete.ts'
 
 export { TuiPromptService } from './prompt.ts'

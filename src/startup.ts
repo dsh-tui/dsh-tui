@@ -14,6 +14,7 @@ import {
   CONFIGURED_AGENT_IDENTITIES_KEY,
   type LauncherAgentIdentity,
 } from '@deepseek-ai/dsh-agent-loop'
+import type { TuiResumeHost } from './runtime.ts'
 
 /** Service key under which the parsed TUI launch options are provided. */
 export const TUI_STARTUP_SERVICE = 'tuiStartup'
@@ -65,6 +66,54 @@ export function apply(ctx: Context): void {
     ctx.provide(CONFIGURED_AGENT_IDENTITIES_KEY, { [MAIN_AGENT_ID]: identity })
     ctx.provide(TUI_STARTUP_SERVICE, { sessionId: identity.id, resume: identity.resume })
     ctx.provide('tuiGoodbyeMessage', `To resume this session: dsh --profile tui --resume=${identity.id}`)
+    installResumeHost(ctx)
   })
   parseCmdline(ctx, program)
+}
+
+/**
+ * Provide the in-place `/resume` handoff when the platform supports it: the
+ * selected session re-enters through this same intake by re-execing the dsh
+ * entry with a normalized `--resume` flag. Without `process.execve` or a known
+ * entry, sessions stay selectable but not resumable in place.
+ * @param ctx - plugin context whose root fiber owns the whole app tree.
+ */
+function installResumeHost(ctx: Context): void {
+  const entry = process.argv[1]
+  const execve = process.execve?.bind(process)
+  if (entry === undefined || execve === undefined) return
+  // Launcher args minus every `--resume` occurrence, so the handoff target
+  // keeps the invoking profile and overlays while swapping the session.
+  const baseArgs: string[] = []
+  const argv = process.argv.slice(2)
+  for (let index = 0; index < argv.length; index++) {
+    const arg = argv[index]
+    if (arg === undefined || arg.startsWith('--resume=')) continue
+    if (arg === '--resume') {
+      index++
+      continue
+    }
+    baseArgs.push(arg)
+  }
+  const host: TuiResumeHost = {
+    async handoff(sessionId, cwd): Promise<never> {
+      // `execve` inherits the cwd, and the target session may belong to
+      // another workspace. Enter it BEFORE teardown commits: an unreachable
+      // directory must reject while the caller can still restore the terminal.
+      try {
+        process.chdir(cwd)
+      } catch (error) {
+        throw new Error(`dsh-tui: cannot resume in "${cwd}": ${String(error)}`)
+      }
+      try {
+        await ctx.root.fiber.dispose()
+        execve(process.execPath, [process.execPath, ...process.execArgv, entry, ...baseArgs, `--resume=${sessionId}`], process.env)
+        throw new Error('process replacement returned unexpectedly')
+      } catch (error) {
+        process.stderr.write(`dsh-tui: resume handoff failed after terminal release: ${String(error)}\n`)
+        process.exit(1)
+      }
+    },
+  }
+  ctx.provide('tuiResumeHost', host)
 }
