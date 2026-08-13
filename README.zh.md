@@ -23,12 +23,12 @@
 需要 Node `^22.19 || >=24` 和 `dsh` CLI（`npm i -g @deepseek-ai/dsh@next`）。
 
 ```sh
-dsh plugin --profile tui add github:openguardrails/dsh-tui
+dsh plugin --profile tui add @openguardrails/dsh-tui
 dsh --profile tui                                      # 在当前目录开启会话
 dsh --profile tui --resume <session-id>                # 恢复历史会话
 ```
 
-git 安装的插件在安装时通过 `prepare` 脚本构建，pnpm 默认拦截构建脚本：若首次 `add` 失败，按它打印的键名在 `~/.dsh/profiles/tui/pnpm-workspace.yaml` 里追加 `allowBuilds` 后重跑——
+想跟踪仓库最新代码而非 npm 发布版，用 `add github:openguardrails/dsh-tui`。git 安装的插件在安装时通过 `prepare` 脚本构建，pnpm 默认拦截构建脚本：若该 `add` 失败，按它打印的键名在 `~/.dsh/profiles/tui/pnpm-workspace.yaml` 里追加 `allowBuilds` 后重跑——
 
 ```yaml
 allowBuilds:
