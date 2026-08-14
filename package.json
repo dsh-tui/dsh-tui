@@ -1,6 +1,6 @@
 {
-  "name": "@openguardrails/dsh-tui",
-  "description": "Interactive pi-tui terminal front door for DeepSeek Harness agents",
+  "name": "@dsh-tui/dsh-tui",
+  "description": "Claude Code-style interactive terminal UI for DeepSeek Harness agents",
   "version": "0.1.2",
   "type": "module",
   "main": "lib/index.js",
@@ -34,7 +34,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/openguardrails/dsh-tui.git"
+    "url": "git+https://github.com/dsh-tui/dsh-tui.git"
   },
   "dsh": {
     "bundle": {

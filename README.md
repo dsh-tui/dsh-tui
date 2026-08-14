@@ -1,4 +1,4 @@
-# @openguardrails/dsh-tui
+# @dsh-tui/dsh-tui
 
 English | [中文](README.zh.md)
 
@@ -23,16 +23,16 @@ It composes over the official `@deepseek-ai/dsh-base` bundle, so the whole plugi
 Requires Node `^22.19 || >=24` and the `dsh` CLI (`npm i -g @deepseek-ai/dsh@next`).
 
 ```sh
-dsh plugin --profile tui add @openguardrails/dsh-tui
+dsh plugin --profile tui add @dsh-tui/dsh-tui
 dsh --profile tui                                      # start a session in the current directory
 dsh --profile tui --resume <session-id>                # resume a persisted session
 ```
 
-To track the repo instead of the npm release, use `add github:openguardrails/dsh-tui`. Git-hosted plugins build on install via their `prepare` script, which pnpm blocks until you allow it: if that `add` fails, append the key it prints under `allowBuilds` in `~/.dsh/profiles/tui/pnpm-workspace.yaml` and re-run —
+To track the repo instead of the npm release, use `add github:dsh-tui/dsh-tui`. Git-hosted plugins build on install via their `prepare` script, which pnpm blocks until you allow it: if that `add` fails, append the key it prints under `allowBuilds` in `~/.dsh/profiles/tui/pnpm-workspace.yaml` and re-run —
 
 ```yaml
 allowBuilds:
-  "@openguardrails/dsh-tui": true
+  "@dsh-tui/dsh-tui": true
 ```
 
 Set `DEEPSEEK_API_KEY` in your environment (or a `.env` in the launch directory or `$DSH_HOME`).

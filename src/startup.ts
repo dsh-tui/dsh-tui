@@ -2,7 +2,7 @@
  * TUI command-line intake: parses the app arguments the dsh launcher hands
  * over, mints or resumes the `main` agent's session identity, and provides the
  * `tuiStartup` service the agent-loop and tui rows inject.
- * @module @openguardrails/dsh-tui/startup
+ * @module @dsh-tui/dsh-tui/startup
  */
 
 import { randomUUID } from 'node:crypto'

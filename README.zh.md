@@ -1,4 +1,4 @@
-# @openguardrails/dsh-tui
+# @dsh-tui/dsh-tui
 
 [English](README.md) | 中文
 
@@ -23,16 +23,16 @@
 需要 Node `^22.19 || >=24` 和 `dsh` CLI（`npm i -g @deepseek-ai/dsh@next`）。
 
 ```sh
-dsh plugin --profile tui add @openguardrails/dsh-tui
+dsh plugin --profile tui add @dsh-tui/dsh-tui
 dsh --profile tui                                      # 在当前目录开启会话
 dsh --profile tui --resume <session-id>                # 恢复历史会话
 ```
 
-想跟踪仓库最新代码而非 npm 发布版，用 `add github:openguardrails/dsh-tui`。git 安装的插件在安装时通过 `prepare` 脚本构建，pnpm 默认拦截构建脚本：若该 `add` 失败，按它打印的键名在 `~/.dsh/profiles/tui/pnpm-workspace.yaml` 里追加 `allowBuilds` 后重跑——
+想跟踪仓库最新代码而非 npm 发布版，用 `add github:dsh-tui/dsh-tui`。git 安装的插件在安装时通过 `prepare` 脚本构建，pnpm 默认拦截构建脚本：若该 `add` 失败，按它打印的键名在 `~/.dsh/profiles/tui/pnpm-workspace.yaml` 里追加 `allowBuilds` 后重跑——
 
 ```yaml
 allowBuilds:
-  "@openguardrails/dsh-tui": true
+  "@dsh-tui/dsh-tui": true
 ```
 
 在环境变量（或启动目录 / `$DSH_HOME` 下的 `.env`）里设置 `DEEPSEEK_API_KEY`。

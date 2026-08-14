@@ -3,7 +3,7 @@
  * `agent/inbox/spliced` events preserve whether an admitted `user/message`
  * came from the queued-turn list or the mid-turn next-step list. Ported from
  * the harness web client's React-free steering-history fold.
- * @module @openguardrails/dsh-tui/chat/steering
+ * @module @dsh-tui/dsh-tui/chat/steering
  */
 
 import type { SessionEvent } from '@deepseek-ai/dsh-session'

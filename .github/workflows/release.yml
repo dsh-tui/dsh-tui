@@ -1,8 +1,7 @@
 # Publish to npm on a version tag (v*) via npm trusted publishing (OIDC) — no
 # token secret. One-time setup on npmjs.com: add a trusted publisher for
-# @openguardrails/dsh-tui pointing at openguardrails/dsh-tui, workflow
-# release.yml, environment npm (the same pattern openguardrails/openguardrails
-# uses for its npm packages).
+# @dsh-tui/dsh-tui pointing at dsh-tui/dsh-tui, workflow
+# release.yml, environment npm.
 name: release
 on:
   push:
@@ -50,12 +49,12 @@ jobs:
           if-no-files-found: error
 
   publish:
-    name: Publish @openguardrails/dsh-tui
+    name: Publish @dsh-tui/dsh-tui
     needs: build
     runs-on: ubuntu-latest
     environment:
       name: npm
-      url: https://www.npmjs.com/package/@openguardrails/dsh-tui
+      url: https://www.npmjs.com/package/@dsh-tui/dsh-tui
     permissions:
       contents: read
       id-token: write
