@@ -1405,7 +1405,13 @@ export function createTuiChat(
   const runCommand = (text: string): void => {
     const controller = new AbortController()
     commandControllers.add(controller)
-    void ctx.commands.execute(agent, text, controller.signal).then(
+    // dsh 0.1.1-rc.x inserted an `images` parameter before `signal`
+    // (base64 composer images accompanying the slash line; empty for a
+    // plain invocation). Passing the signal positionally against those
+    // releases leaves the harness's own signal undefined, so every
+    // slash command dies with "Cannot read properties of undefined
+    // (reading 'aborted')".
+    void ctx.commands.execute(agent, text, [], controller.signal).then(
       (execution) => {
         if (disposed) return
         if (execution === undefined) {

@@ -4348,6 +4348,40 @@ describe('pi-tui chat lifecycle and transcript', () => {
     await contextResult.ctx.fiber.dispose()
   })
 
+  it('sends an empty composer images array to commands.execute, keeping signal in its own slot', async () => {
+    // dsh-commands 0.1.1-rc.x inserted an `images` parameter before
+    // `signal`; a positional 3-argument call leaves the harness's own
+    // signal undefined and every slash command crashes with
+    // "Cannot read properties of undefined (reading 'aborted')".
+    const result = await setup()
+    const original = result.ctx.commands.execute.bind(result.ctx.commands)
+    const execute = vi.fn(original) as unknown as typeof result.ctx.commands.execute &
+    ReturnType<typeof vi.fn>
+    result.ctx.commands.execute = execute
+
+    result.ctx.commands.register({
+      name: 'images-probe',
+      description: 'Probe composer images argument',
+      handler: () => ({ kind: 'success' as const, text: 'IMAGES:PROBE' }),
+    })
+
+    result.terminal.send('/images-probe')
+    result.terminal.send('\r')
+    await tick()
+
+    expect(execute).toHaveBeenCalledTimes(1)
+    const [agent, line, images, signal] = execute.mock.calls[0]!
+    expect(agent).toBe(result.agent)
+    expect(line).toBe('/images-probe')
+    expect(images).toEqual([])
+    expect(signal).toBeInstanceOf(AbortSignal)
+    expect(signal!.aborted).toBe(false)
+    expect(result.terminal.output).toContain('IMAGES:PROBE')
+
+    await result.controller.dispose()
+    await result.ctx.fiber.dispose()
+  })
+
   it('discovers and executes plugin commands, then removes TUI-local commands on disposal', async () => {
     const result = await setup()
     const handler = vi.fn(({ rawInput }: CommandInvocation) => ({
